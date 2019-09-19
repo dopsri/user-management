@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{fragments/main_layout}">
+<body>
+
+	<div layout:fragment="content" class="container mySpace ex1">	     
+		<div class="card">
+			<div class="card card-body">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Email</th>
+							<th>Update</th>
+							<th>Delete</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user:${users}">
+							<td th:text="${user.firstName}"></td>
+							<td th:text="${user.lastName}"></td>
+							<td th:text="${user.email}"></td>
+							<td><a th:href="@{/editUser(username=${user.username})}" class="btn btn-dark">Update</a></td>
+							<td><a th:href="@{/deleteUser(username=${user.username})}" class="btn btn-dark">Delete</a></td>
+						</tr>
+					</tbody>
+
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

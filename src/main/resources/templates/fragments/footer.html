@@ -1,0 +1,8 @@
+<div th:fragment="footer">
+	<p class="text text-center" sec:authorize="isAuthenticated()">
+      | Welcome <span sec:authentication="name"></span> <span sec:authentication="principal.authorities"></span> |
+   </p>
+   <p class="text text-center">&copy; 2019 Srinivasa Rao Doppalapudi</p>
+   
+   
+</div>

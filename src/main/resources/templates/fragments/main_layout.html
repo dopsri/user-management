@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="../../static/css/style.css" th:href="@{css/style.css}" />
+        <link rel="stylesheet" href="../../static/css/cosmo/bootstrap.min.css"  th:href="@{css/cosmo/bootstrap.min.css}" />
+        <script th:src="@{webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </head>
+    <body>
+        <div th:replace="fragments/header :: header"></div>
+        <div layout:fragment="content"></div>
+        <div th:replace="fragments/footer::footer"></div>
+    </body>
+</html>
