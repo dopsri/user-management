@@ -41,6 +41,14 @@
 				<input type="text" class="form-control" th:field="*{email}" id="email" />
 				<div class="text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
 			</div>
+			
+			<div class="form-group">
+				<label for="roles" class="form-control-label">Roles</label>
+				<th:block th:each="role : ${roles}">
+                	<input type="checkbox" th:field="*{roles}" th:value="${role}"/>
+                	<label th:text="${role}"></label>
+               	</th:block>
+			</div>
 
 			<input type="submit" value="Submit" class="btn btn-primary" />
 

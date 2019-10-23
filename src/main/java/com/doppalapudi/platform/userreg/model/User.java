@@ -56,7 +56,7 @@ public class User {
     @Getter @Setter
     private String email;
     
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "USER_ROLES", 
 		joinColumns={
 				@JoinColumn(name = "USER_NAME", referencedColumnName = "USER_NAME") }, 

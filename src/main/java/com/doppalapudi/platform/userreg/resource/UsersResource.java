@@ -2,6 +2,7 @@ package com.doppalapudi.platform.userreg.resource;
 
 import com.doppalapudi.platform.userreg.model.Role;
 import com.doppalapudi.platform.userreg.model.User;
+import com.doppalapudi.platform.userreg.repository.RolesRepository;
 import com.doppalapudi.platform.userreg.repository.UsersRepository;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -15,8 +16,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -28,6 +33,9 @@ public class UsersResource {
 
     @Autowired
     private UsersRepository usersRepository;
+    
+    @Autowired
+    private RolesRepository rolesRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -50,26 +58,40 @@ public class UsersResource {
 
     @GetMapping("/signup")
     public String signUp(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new User());        
+        model.addAttribute("roles", getRoleNames());
         return "views/registerForm";
+    }
+    
+    private Set<String> getRoleNames() {
+    	return rolesRepository.findAll().stream()
+        .map(role -> role.getRoleName()).collect(Collectors.toSet());    	
     }
 
     @PostMapping("/register")
     public String registerUser(@Valid User user, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()) {
+        	model.addAttribute("roles", getRoleNames());
             return "views/registerForm";
         }
         if(usersRepository.findByUsernameLike(user.getUsername()) != null) {
+        	model.addAttribute("roles", getRoleNames());
             model.addAttribute("exist",true);
             return "views/registerForm";
         }
         
         LOGGER.debug("passwordEncoder : {}", passwordEncoder);
+        
+        LOGGER.error("user.getRoles() : {}", user.getRoles());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role role = new Role();
-        role.setRoleName("USER");
-        user.setRoles(Collections.singleton(role));
+        /*Role userRole = new Role();
+        userRole.setRoleName("USER");
+        
+        Role adminRole = new Role();
+        adminRole.setRoleName("ADMIN");
+        
+        user.setRoles(Stream.of(userRole, adminRole).collect(Collectors.toSet()));*/
         usersRepository.save(user);
         return "views/success";
     }
@@ -80,6 +102,7 @@ public class UsersResource {
     	Optional<User> user = usersRepository.findById(userName);
     	if(user.isPresent()) {
     		model.addAttribute("user", user.get());
+    		model.addAttribute("roles", getRoleNames());
             return "views/updateUser";    		
     	}
     	return "forward:users";
@@ -88,6 +111,7 @@ public class UsersResource {
     @PostMapping("/updateUser")
     public String updateUser(@Valid User user, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()) {
+        	LOGGER.debug("bindingResult : {}", ReflectionToStringBuilder.reflectionToString(bindingResult));
             return "views/updateUser";
         }
         
@@ -99,6 +123,7 @@ public class UsersResource {
         	dbUser.setFirstName(user.getFirstName());
             dbUser.setLastName(user.getLastName());
             dbUser.setEmail(user.getEmail());
+            dbUser.setRoles(user.getRoles());
             usersRepository.save(dbUser);
         }
         return "redirect:users";

@@ -28,6 +28,6 @@ public class Role {
     @Setter
     private String roleName;
 	
-	@ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<User> users;
 }
